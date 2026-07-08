@@ -323,6 +323,26 @@
       50%       { transform: translateX(-50%) translateY(6px); }
     }
 
+    /* GSAP hero entrance: hidden only once JS confirms GSAP is about to run, */
+    /* so a JS/CDN failure leaves the hero at its normal, fully-visible state */
+    .hero.gsap-pending .hero-moon,
+    .hero.gsap-pending h1,
+    .hero.gsap-pending .hero-sub,
+    .hero.gsap-pending .hero-btns {
+      opacity: 0;
+    }
+
+    /* Scroll reveal: class only ever added by JS, same fail-open rule as above */
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.7s cubic-bezier(.16,.6,.35,1), transform 0.7s cubic-bezier(.16,.6,.35,1);
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: none;
+    }
+
     /* === SPLASH INTRO === */
     .splash {
       position: fixed;
@@ -399,6 +419,22 @@
       z-index: 1;
     }
     .splash.flash .splash-moon {
+      filter: drop-shadow(0 0 60px rgba(232,201,122,1)) brightness(1.9);
+      transform: scale(1.15);
+    }
+
+    /* Three.js canvas swaps in over the CSS moon once WebGL scene is ready; */
+    /* CSS moon above stays as the permanent fallback if it never loads     */
+    .splash-moon-canvas {
+      display: none;
+      width: 84px;
+      height: 84px;
+      margin: 0 auto;
+      filter: drop-shadow(0 0 18px rgba(201,168,76,0.6));
+      transition: filter 0.25s ease, transform 0.25s ease;
+    }
+    .splash-moon-canvas.active { display: block; }
+    .splash.flash .splash-moon-canvas {
       filter: drop-shadow(0 0 60px rgba(232,201,122,1)) brightness(1.9);
       transform: scale(1.15);
     }
@@ -791,6 +827,7 @@
       .foot-bottom { flex-direction: column; text-align: center; }
 
       .splash-moon { width: 62px; height: 62px; }
+      .splash-moon-canvas { width: 62px; height: 62px; }
       .splash-text { font-size: 0.85rem; }
     }
 
@@ -808,6 +845,7 @@
   <button type="button" class="splash-skip" id="splashSkip">Skip</button>
   <div class="splash-content">
     <span class="splash-moon" aria-hidden="true"></span>
+    <canvas class="splash-moon-canvas" id="splashMoonCanvas" aria-hidden="true"></canvas>
     <p class="splash-text">Enter the Sanctuary</p>
     <p class="splash-hint" aria-hidden="true"><span class="hint-click">Click to Enter</span><span class="hint-touch">Touch to Enter</span></p>
   </div>
@@ -846,6 +884,7 @@
     <div class="scroll-line"></div>
   </div>
 </section>
+<script>document.getElementById('home').classList.add('gsap-pending');</script>
 
 <!-- SHOP -->
 <section id="shop" class="shop">
@@ -1232,17 +1271,138 @@
     });
   });
 
+  // Shared helpers for progressively-enhanced third-party scripts (Three.js, GSAP).
+  // Any load failure/timeout just means the CSS-only fallback stays in place.
+  const SPLASH_SEEN_KEY = 'lc_splash_seen';
+
+  function loadScript(src, integrity) {
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      s.src = src;
+      if (integrity) {
+        s.integrity = integrity;
+        s.crossOrigin = 'anonymous';
+      }
+      s.onload = () => resolve();
+      s.onerror = () => reject(new Error('failed to load ' + src));
+      document.head.appendChild(s);
+    });
+  }
+
+  function loadScriptWithTimeout(src, integrity, ms) {
+    return Promise.race([
+      loadScript(src, integrity),
+      new Promise((_, reject) => setTimeout(() => reject(new Error('timed out: ' + src)), ms))
+    ]);
+  }
+
+  // Procedural crater bump map so the 3D moon reads as a surface, not a flat sphere.
+  // No network texture fetch needed/no extra asset to license or host.
+  function makeMoonBumpTexture() {
+    const c = document.createElement('canvas');
+    c.width = c.height = 128;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#888';
+    ctx.fillRect(0, 0, 128, 128);
+    for (let i = 0; i < 46; i++) {
+      const x = Math.random() * 128;
+      const y = Math.random() * 128;
+      const r = 2 + Math.random() * 7;
+      const dark = Math.random() > 0.5;
+      const g = ctx.createRadialGradient(x, y, 0, x, y, r);
+      g.addColorStop(0, dark ? '#303030' : '#d8d8d8');
+      g.addColorStop(1, '#888');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.needsUpdate = true;
+    return tex;
+  }
+
+  function buildMoonScene(canvas) {
+    const isMobile = window.innerWidth < 640;
+    const size = isMobile ? 62 : 84;
+    const segments = isMobile ? 20 : 40;
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(pixelRatio);
+    renderer.setSize(size, size, false);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 10);
+    camera.position.z = 3.4;
+
+    const geometry = new THREE.SphereGeometry(1, segments, segments);
+    const bumpTexture = makeMoonBumpTexture();
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xb9b2a4,
+      roughness: 0.95,
+      metalness: 0.05,
+      bumpMap: bumpTexture,
+      bumpScale: 0.035
+    });
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    // Faint cool fill so the shadow side reads as dark, not a crushed pure-black hole
+    scene.add(new THREE.AmbientLight(0x1a1410, 0.5));
+    // Warm gold key light, angled to carve a real crescent terminator across the sphere
+    const key = new THREE.DirectionalLight(0xe8c97a, 3.0);
+    key.position.set(-2.2, 0.4, -0.6); // grazing side-angle -> visible crescent, not full disc or near-total eclipse
+    scene.add(key);
+
+    let rafId;
+    let disposed = false;
+    (function tick() {
+      if (disposed) return;
+      sphere.rotation.y += 0.0025; // slow ambient auto-rotate, not distracting
+      renderer.render(scene, camera);
+      rafId = requestAnimationFrame(tick);
+    })();
+
+    return {
+      dispose() {
+        disposed = true;
+        cancelAnimationFrame(rafId);
+        geometry.dispose();
+        material.dispose();
+        bumpTexture.dispose();
+        renderer.dispose();
+      }
+    };
+  }
+
+  const THREE_SRC = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  const THREE_SRI = 'sha384-CI3ELBVUz9XQO+97x6nwMDPosPR5XvsxW2ua7N1Xeygeh1IxtgqtCkGfQY9WWdHu';
+
   // Intro splash
   (function () {
-    const SEEN_KEY = 'lc_splash_seen';
     const splash = document.getElementById('splash');
-    if (!splash || sessionStorage.getItem(SEEN_KEY)) return;
+    if (!splash || sessionStorage.getItem(SPLASH_SEEN_KEY)) return;
 
     splash.hidden = false;
     document.body.style.overflow = 'hidden';
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let done = false;
+    let moon3D = null;
+
+    if (!reduceMotion) {
+      const moonEl = document.querySelector('.splash-moon');
+      const canvas = document.getElementById('splashMoonCanvas');
+      loadScriptWithTimeout(THREE_SRC, THREE_SRI, 4000)
+        .then(() => {
+          if (done || !window.THREE) return; // splash already dismissed before it arrived
+          moon3D = buildMoonScene(canvas);
+          moonEl.style.display = 'none';
+          canvas.classList.add('active');
+        })
+        .catch(() => { /* CSS crescent (already visible) stays as the moon */ });
+    }
 
     const STAR_COLORS = ['#e8c97a', '#e8c97a', '#e8c97a', '#fff6da', '#b07ee0'];
 
@@ -1280,15 +1440,17 @@
     function cleanup() {
       clearTimeout(fallbackTimer);
       splash.removeEventListener('transitionend', onTransitionEnd);
+      if (moon3D) { moon3D.dispose(); moon3D = null; }
       splash.hidden = true;
       splash.remove();
+      window.dispatchEvent(new CustomEvent('splash:done'));
     }
     splash.addEventListener('transitionend', onTransitionEnd);
 
     function finish(animate) {
       if (done) return;
       done = true;
-      sessionStorage.setItem(SEEN_KEY, '1');
+      sessionStorage.setItem(SPLASH_SEEN_KEY, '1');
       document.body.style.overflow = '';
 
       if (animate) {
@@ -1307,6 +1469,74 @@
       e.stopPropagation();
       finish(false);
     });
+  })();
+
+  // Hero entrance (GSAP, progressive enhancement)
+  // .gsap-pending (set inline right after the hero markup, see below) hides the
+  // hero content the instant GSAP is confirmed on its way in; if GSAP never
+  // loads, this block removes that class immediately so the hero is never
+  // stuck invisible.
+  (function () {
+    const heroEl = document.getElementById('home');
+    if (!heroEl) return;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) { heroEl.classList.remove('gsap-pending'); return; }
+
+    const splashWillShow = !!document.getElementById('splash') && !sessionStorage.getItem(SPLASH_SEEN_KEY);
+    let gsapReady = false;
+    let splashDone = !splashWillShow;
+
+    function tryPlay() {
+      if (!gsapReady || !splashDone) return;
+      heroEl.classList.remove('gsap-pending');
+      gsap.timeline({ defaults: { ease: 'power3.out' } })
+        .from('.hero-moon', { opacity: 0, y: -18, scale: 0.75, duration: 1 })
+        .from('.hero h1',    { opacity: 0, y: 26, duration: 0.9 }, '-=0.62')
+        .from('.hero-sub',   { opacity: 0, y: 18, duration: 0.8 }, '-=0.55')
+        .from('.hero-btns',  { opacity: 0, y: 14, duration: 0.7 }, '-=0.5');
+    }
+
+    if (splashWillShow) {
+      window.addEventListener('splash:done', () => { splashDone = true; tryPlay(); }, { once: true });
+    }
+
+    loadScriptWithTimeout(
+      'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js',
+      'sha384-HOvlOYPIs/zjoIkWUGXkVmXsjr8GuZLV+Q+rcPwmJOVZVpvTSXQChiN4t9Euv9Vc',
+      4000
+    )
+      .then(() => { gsapReady = true; tryPlay(); })
+      .catch(() => heroEl.classList.remove('gsap-pending'));
+  })();
+
+  // Scroll reveal for shop grid + about section (native IntersectionObserver,
+  // no library -- .reveal is only ever added here, so a JS failure just
+  // leaves these elements at their normal, fully-visible CSS state)
+  (function () {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion || !('IntersectionObserver' in window)) return;
+
+    const targets = [
+      ...document.querySelectorAll('.card'),
+      document.querySelector('.about-text'),
+      document.querySelector('.about-art')
+    ].filter(Boolean);
+
+    targets.forEach((el, i) => {
+      el.classList.add('reveal');
+      el.style.transitionDelay = ((i % 4) * 0.08).toFixed(2) + 's';
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add('in-view');
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -8% 0px' });
+
+    targets.forEach((el) => io.observe(el));
   })();
 </script>
 
