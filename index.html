@@ -1325,8 +1325,17 @@
   function buildMoonScene(canvas) {
     const isMobile = window.innerWidth < 640;
     const size = isMobile ? 62 : 84;
-    const segments = isMobile ? 20 : 40;
+    const segments = isMobile ? 24 : 64;
     const pixelRatio = Math.min(window.devicePixelRatio || 1, isMobile ? 1.5 : 2);
+
+    // A <canvas> with no width/height attributes starts at the browser's default
+    // 300x150 (non-square) intrinsic size. WebGLRenderer initializes its viewport
+    // against that before our setSize() call corrects canvas.width/height, and on
+    // some GPU/driver combinations the stale viewport clips the render into a
+    // flat-edged silhouette instead of a circle. Setting real pixel dimensions
+    // up front avoids the mismatched initial state entirely.
+    canvas.width = size;
+    canvas.height = size;
 
     const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
     renderer.setPixelRatio(pixelRatio);
