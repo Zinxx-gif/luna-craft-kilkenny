@@ -437,17 +437,34 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 3px;
-      height: 3px;
+      width: var(--size, 3px);
+      height: var(--size, 3px);
       border-radius: 50%;
-      background: var(--gold-lt);
-      box-shadow: 0 0 6px 1px rgba(232,201,122,0.8);
+      background: var(--star-color, var(--gold-lt));
+      color: var(--star-color, var(--gold-lt));
+      box-shadow: 0 0 6px 1px currentColor;
       opacity: 0;
-      animation: star-burst 1s ease-out forwards;
+      animation: star-burst var(--dur, 1s) cubic-bezier(.16,.6,.35,1) forwards;
+      animation-delay: var(--delay, 0s);
+    }
+    /* streak trail pointing back toward the burst center */
+    .splash-star::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: var(--trail, 22px);
+      height: 1.5px;
+      background: linear-gradient(90deg, currentColor, transparent);
+      transform: translate(-100%, -50%) rotate(var(--ang, 0deg));
+      transform-origin: 100% 50%;
+      opacity: 0.5;
+      border-radius: 2px;
     }
     @keyframes star-burst {
-      0%   { transform: translate(-50%, -50%) translate(0, 0) scale(0.4); opacity: 0; }
-      15%  { opacity: 1; }
+      0%   { transform: translate(-50%, -50%) translate(0, 0) scale(0.3); opacity: 0; }
+      12%  { opacity: 1; }
+      65%  { opacity: 1; }
       100% { transform: translate(-50%, -50%) translate(var(--tx), var(--ty)) scale(1); opacity: 0; }
     }
 
@@ -1227,17 +1244,28 @@
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let done = false;
 
+    const STAR_COLORS = ['#e8c97a', '#e8c97a', '#e8c97a', '#fff6da', '#b07ee0'];
+
     function burstStars() {
       const container = document.getElementById('splashStars');
-      const count = window.innerWidth < 640 ? 26 : 46;
+      const count = window.innerWidth < 640 ? 34 : 60;
+      const maxDist = Math.max(window.innerWidth, window.innerHeight) * 0.65;
       const frag = document.createDocumentFragment();
       for (let i = 0; i < count; i++) {
         const star = document.createElement('span');
         star.className = 'splash-star';
         const angle = Math.random() * Math.PI * 2;
-        const dist = 100 + Math.random() * (Math.max(window.innerWidth, window.innerHeight) * 0.6);
+        // depth 0 = near (big, fast, short trail) -> 1 = far (small, slow, long trail),
+        // gives the burst a receding-into-space feel instead of a flat ring
+        const depth = Math.random();
+        const dist = 80 + depth * maxDist;
         star.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
         star.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        star.style.setProperty('--size', (4 - depth * 2.5).toFixed(1) + 'px');
+        star.style.setProperty('--dur', (0.7 + depth * 0.6).toFixed(2) + 's');
+        star.style.setProperty('--trail', (14 + (1 - depth) * 20).toFixed(0) + 'px');
+        star.style.setProperty('--ang', (angle * 180 / Math.PI).toFixed(1) + 'deg');
+        star.style.setProperty('--star-color', STAR_COLORS[(Math.random() * STAR_COLORS.length) | 0]);
         star.style.animationDelay = (Math.random() * 0.25) + 's';
         frag.appendChild(star);
       }
