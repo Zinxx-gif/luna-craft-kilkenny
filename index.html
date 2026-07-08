@@ -389,6 +389,21 @@
       text-transform: uppercase;
     }
 
+    .splash-hint {
+      margin-top: 0.6rem;
+      font-family: var(--font-b);
+      font-size: 0.68rem;
+      font-weight: 400;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-dim);
+    }
+    .splash-hint .hint-touch { display: none; }
+    @media (hover: none), (pointer: coarse) {
+      .splash-hint .hint-click { display: none; }
+      .splash-hint .hint-touch { display: inline; }
+    }
+
     .splash-stars {
       position: absolute;
       inset: 0;
@@ -753,6 +768,7 @@
   <div class="splash-content">
     <span class="splash-moon" aria-hidden="true">&#9789;</span>
     <p class="splash-text">Enter the Sanctuary</p>
+    <p class="splash-hint" aria-hidden="true"><span class="hint-click">Click to Enter</span><span class="hint-touch">Touch to Enter</span></p>
   </div>
   <div class="splash-stars" id="splashStars" aria-hidden="true"></div>
 </div>
