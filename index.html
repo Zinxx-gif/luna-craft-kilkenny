@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LunaCraft Kilkenny | Handmade Spiritual Decor &amp; Gifts | Ireland</title>
-  <meta name="description" content="Handmade witchy and spiritual home decor, candles, incense holders and spell jars. Made in Kilkenny, Ireland. Shop on Etsy.">
-  <meta name="keywords" content="witchy decor Ireland, spiritual gifts Kilkenny, handmade candles Ireland, gothic home decor Ireland, spiritual home decor, witchy gifts Ireland, handmade spell jars, incense holders Ireland, resin decor Kilkenny, witchy candles Ireland, eco resin tray Kilkenny">
+  <meta name="description" content="Handmade witchy and spiritual home decor, candles, incense holders and spell jars. New: Ritual Bundle intention candles with free crystals &amp; herbs. Made in Kilkenny, Ireland. Shop on Etsy.">
+  <meta name="keywords" content="witchy decor Ireland, spiritual gifts Kilkenny, handmade candles Ireland, gothic home decor Ireland, spiritual home decor, witchy gifts Ireland, handmade spell jars, incense holders Ireland, resin decor Kilkenny, witchy candles Ireland, eco resin tray Kilkenny, ritual bundle candle Ireland, intention candles Kilkenny, crystal herb candle bundle, soy candle with crystals Ireland">
   <meta name="robots" content="index, follow">
   <meta name="google-site-verification" content="1uVmRklnvHM6HD_ynQ9WIFrykoTuHpyM6exhL5qsQFQ">
   <meta property="og:title" content="LunaCraft Kilkenny | Handmade Spiritual Decor &amp; Gifts | Ireland">
-  <meta property="og:description" content="Handmade witchy and spiritual home decor, candles, incense holders and spell jars. Made in Kilkenny, Ireland. Shop on Etsy.">
+  <meta property="og:description" content="Handmade witchy and spiritual home decor, candles, incense holders and spell jars. New: Ritual Bundle intention candles with free crystals &amp; herbs. Made in Kilkenny, Ireland. Shop on Etsy.">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -635,6 +635,134 @@
       margin-bottom: 0.9rem;
     }
 
+    /* === NEW ARRIVALS TEASER === */
+    .arrivals {
+      padding: 3.5rem 0 0.5rem;
+      background: var(--bg);
+    }
+
+    .arrivals-panel {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 2.25rem;
+      align-items: center;
+      background: linear-gradient(145deg, rgba(107,47,160,0.16) 0%, rgba(10,8,14,0.7) 60%);
+      border: 1px solid rgba(201,168,76,0.32);
+      border-radius: var(--r-lg);
+      padding: 1.75rem 2.25rem;
+      position: relative;
+      animation: panel-glow 4.5s ease-in-out infinite;
+    }
+
+    @keyframes panel-glow {
+      0%, 100% { box-shadow: 0 0 34px rgba(201,168,76,0.1), 0 0 60px rgba(107,47,160,0.12); }
+      50%       { box-shadow: 0 0 54px rgba(201,168,76,0.22), 0 0 90px rgba(107,47,160,0.2); }
+    }
+
+    .arrivals-media img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: var(--r);
+      border: 1px solid rgba(201,168,76,0.3);
+    }
+
+    .new-badge {
+      display: inline-block;
+      padding: 0.3rem 0.9rem;
+      font-family: var(--font-b);
+      font-size: 0.6rem;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #09060d;
+      background: linear-gradient(135deg, var(--gold-lt), var(--gold));
+      border-radius: 50px;
+      margin-bottom: 0.9rem;
+    }
+
+    .arrivals-body h2 { margin-bottom: 0.7rem; }
+    .arrivals-sub {
+      color: var(--text-dim);
+      max-width: 520px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* === RITUAL BUNDLE COLLECTION === */
+    .ritual-bundles {
+      padding: 4rem 0 5.5rem;
+      background: var(--bg);
+    }
+    .ritual-bundles .wrap { text-align: center; }
+    .ritual-intro {
+      color: var(--text-dim);
+      max-width: 560px;
+      margin: -1.75rem auto 2.75rem;
+    }
+
+    .card-intention {
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--purple-lt);
+      margin-bottom: 0.3rem;
+    }
+    .card-scent {
+      font-size: 0.74rem;
+      color: var(--text-dim);
+      margin-bottom: 0.7rem;
+    }
+    .card-bundle-note {
+      font-size: 0.72rem;
+      font-style: italic;
+      color: var(--gold-lt);
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .whats-inside {
+      border-top: 1px solid var(--border);
+      padding-top: 0.6rem;
+      margin-bottom: 0.9rem;
+    }
+    .whats-inside summary {
+      cursor: pointer;
+      font-family: var(--font-b);
+      font-size: 0.66rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold);
+      list-style: none;
+    }
+    .whats-inside summary::-webkit-details-marker { display: none; }
+    .whats-inside summary::after { content: '+'; float: right; }
+    .whats-inside[open] summary::after { content: '\2212'; }
+    .whats-inside ul { margin-top: 0.6rem; }
+    .whats-inside li {
+      font-size: 0.78rem;
+      color: var(--text-dim);
+      padding: 0.2rem 0;
+      line-height: 1.5;
+    }
+
+    .card-featured {
+      border-color: rgba(201,168,76,0.55);
+      box-shadow: 0 0 30px rgba(201,168,76,0.15);
+    }
+    .best-value {
+      display: inline-block;
+      font-size: 0.56rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #09060d;
+      background: var(--gold);
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+      vertical-align: middle;
+      margin-left: 0.4rem;
+    }
+
     /* === ABOUT === */
     .about {
       padding: 5.5rem 0 6rem;
@@ -792,6 +920,10 @@
       .sigil-glyph { font-size: 3.5rem; }
       .foot-grid { grid-template-columns: 1fr 1fr; }
       .foot-brand { grid-column: 1 / -1; }
+
+      .arrivals-panel { grid-template-columns: 1fr; text-align: center; padding: 1.75rem; }
+      .arrivals-media { max-width: 200px; margin: 0 auto; }
+      .arrivals-sub { margin-left: auto; margin-right: auto; }
     }
 
     @media (max-width: 640px) {
@@ -861,6 +993,7 @@
     </button>
     <ul class="nav-links" id="navMenu">
       <li><a href="#home">Home</a></li>
+      <li><a href="#ritual-bundles">Ritual Bundles</a></li>
       <li><a href="#shop">Shop</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#contact">Contact</a></li>
@@ -885,6 +1018,150 @@
   </div>
 </section>
 <script>document.getElementById('home').classList.add('gsap-pending');</script>
+
+<!-- NEW ARRIVALS TEASER -->
+<section id="new-arrivals" class="arrivals">
+  <div class="wrap">
+    <div class="arrivals-panel">
+      <div class="arrivals-media">
+        <img src="images/ritual-bundle-collection.jpg" alt="LunaCraft Ritual Bundle Candle Collection - five handmade soy candles with crystal and herb ritual bundles" loading="lazy">
+      </div>
+      <div class="arrivals-body">
+        <span class="new-badge">New</span>
+        <h2>Ritual Bundle Candles &mdash; Just Landed</h2>
+        <p class="arrivals-sub">Five hand-poured soy candles, each set with an intention and paired with a free ritual bundle of crystals, herbs &amp; a charm. Handmade in Kilkenny, Ireland.</p>
+        <a href="#ritual-bundles" class="btn btn-gold">Shop the Collection</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RITUAL BUNDLE COLLECTION -->
+<section id="ritual-bundles" class="ritual-bundles">
+  <div class="wrap">
+    <div class="label">Just Landed</div>
+    <h2>Ritual Bundle Candle Collection</h2>
+    <div class="divider"></div>
+    <p class="ritual-intro">Approx. 200g per candle &middot; handmade soy wax &middot; handmade in Kilkenny, Ireland. Every candle ships with its own free ritual bundle.</p>
+
+    <div class="grid">
+
+      <div class="card">
+        <div class="card-img"><img src="images/ritual-bundle-midnight-raven.jpg" alt="Midnight Raven ritual bundle candle with black obsidian, star anise and rosemary" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Ritual Bundle Candle</span>
+          <h3 class="card-name">Midnight Raven</h3>
+          <p class="card-intention">Protection &middot; Grounding &middot; Strength</p>
+          <p class="card-scent">Warm / Woody / Earthy / Mystical</p>
+          <div class="card-price">&euro;14.99</div>
+          <p class="card-bundle-note">Includes a free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <details class="whats-inside">
+            <summary>What's Inside</summary>
+            <ul>
+              <li>Bay Leaf, Star Anise &amp; Rosemary Sprig</li>
+              <li>Candle Topper: Black Obsidian &amp; Star Anise</li>
+            </ul>
+          </details>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Shop This</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="images/ritual-bundle-celestial-dreams.jpg" alt="Celestial Dreams ritual bundle candle with amethyst cluster and dried lavender" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Ritual Bundle Candle</span>
+          <h3 class="card-name">Celestial Dreams</h3>
+          <p class="card-intention">Relaxation &middot; Sleep &middot; Dreams</p>
+          <p class="card-scent">Floral / Sweet / Powdery / Calming</p>
+          <div class="card-price">&euro;14.99</div>
+          <p class="card-bundle-note">Includes a free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <details class="whats-inside">
+            <summary>What's Inside</summary>
+            <ul>
+              <li>Lavender Sprig, Chamomile Flower &amp; Dried Rose Petals</li>
+              <li>Candle Topper: Amethyst Cluster &amp; Dried Lavender</li>
+            </ul>
+          </details>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Shop This</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="images/ritual-bundle-enchanted-forest.jpg" alt="Enchanted Forest ritual bundle candle with green aventurine, sandalwood and rosemary" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Ritual Bundle Candle</span>
+          <h3 class="card-name">Enchanted Forest</h3>
+          <p class="card-intention">Prosperity &middot; Abundance &middot; Growth</p>
+          <p class="card-scent">Fresh / Herbal / Citrus / Uplifting</p>
+          <div class="card-price">&euro;14.99</div>
+          <p class="card-bundle-note">Includes a free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <details class="whats-inside">
+            <summary>What's Inside</summary>
+            <ul>
+              <li>Rosemary Sprig, Sandalwood Stick &amp; Bay Leaf</li>
+              <li>Candle Topper: Green Aventurine</li>
+            </ul>
+          </details>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Shop This</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="images/ritual-bundle-autumn-ember.jpg" alt="Autumn Ember ritual bundle candle with carnelian, cinnamon and dried orange slice" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Ritual Bundle Candle</span>
+          <h3 class="card-name">Autumn Ember</h3>
+          <p class="card-intention">Courage &middot; Motivation &middot; Confidence</p>
+          <p class="card-scent">Warm / Spicy / Woody / Cozy</p>
+          <div class="card-price">&euro;14.99</div>
+          <p class="card-bundle-note">Includes a free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <details class="whats-inside">
+            <summary>What's Inside</summary>
+            <ul>
+              <li>Cinnamon Stick, Cloves &amp; Dried Orange Slice</li>
+              <li>Candle Topper: Carnelian</li>
+            </ul>
+          </details>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Shop This</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img"><img src="images/ritual-bundle-moonlit-rose.jpg" alt="Moonlit Rose ritual bundle candle with rose quartz and dried rose petals" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Ritual Bundle Candle</span>
+          <h3 class="card-name">Moonlit Rose</h3>
+          <p class="card-intention">Love &middot; Harmony &middot; Creativity &middot; Flow</p>
+          <p class="card-scent">Floral / Rosy / Sweet / Romantic</p>
+          <div class="card-price">&euro;14.99</div>
+          <p class="card-bundle-note">Includes a free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <details class="whats-inside">
+            <summary>What's Inside</summary>
+            <ul>
+              <li>Dried Rose Bud, Lavender Sprig &amp; Chamomile Flower</li>
+              <li>Candle Topper: Rose Quartz &amp; Dried Rose Petals</li>
+            </ul>
+          </details>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-outline btn-sm" target="_blank" rel="noopener noreferrer">Shop This</a>
+        </div>
+      </div>
+
+      <div class="card card-featured">
+        <div class="card-img"><img src="images/ritual-bundle-collection.jpg" alt="Full LunaCraft Ritual Bundle Candle Collection - all five intention candles with crystals and herbs" loading="lazy"></div>
+        <div class="card-body">
+          <span class="cat-tag">Full Collection</span>
+          <h3 class="card-name">Full Collection Bundle <span class="best-value">Best Value</span></h3>
+          <p class="card-intention">All 5 Ritual Bundle Candles</p>
+          <p class="card-scent">Midnight Raven &middot; Celestial Dreams &middot; Enchanted Forest &middot; Autumn Ember &middot; Moonlit Rose</p>
+          <div class="card-price">&euro;64.99</div>
+          <p class="card-bundle-note">Every candle includes its own free ritual bundle &mdash; crystals, herbs &amp; a charm.</p>
+          <a href="https://www.etsy.com/ie/listing/4535058443/intention-candle-with-crystal-herb" class="btn btn-gold btn-sm" target="_blank" rel="noopener noreferrer">Shop the Bundle</a>
+        </div>
+      </div>
+
+    </div><!-- /.grid -->
+  </div>
+</section>
 
 <!-- SHOP -->
 <section id="shop" class="shop">
@@ -1218,6 +1495,7 @@
       <div class="foot-col">
         <h4>Categories</h4>
         <ul>
+          <li><a href="#ritual-bundles">Ritual Bundles</a></li>
           <li><a href="#shop">Candles</a></li>
           <li><a href="#shop">Incense Holders</a></li>
           <li><a href="#shop">Decor &amp; Trays</a></li>
@@ -1527,6 +1805,7 @@
     if (reduceMotion || !('IntersectionObserver' in window)) return;
 
     const targets = [
+      document.querySelector('.arrivals-panel'),
       ...document.querySelectorAll('.card'),
       document.querySelector('.about-text'),
       document.querySelector('.about-art')
